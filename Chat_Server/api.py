@@ -1,35 +1,38 @@
+# API
 import os
 import json
 import logging
 import requests
 
+import flask
+from flask import Flask, request
+from flask_restful import Resource, Api
+from flask_cors import CORS
+from dotenv import load_dotenv
+from flask_api import status
+
 from jsonschema import validate, ValidationError
 from ibm_watson import AssistantV2, ApiException
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from flask import jsonify
-from flask_api import status
 
+load_dotenv()
 
-request_data = {
-            "assistant_api_key": "etPM2hdb6KoSXOIDZfrB49m-xTTFS7afW6jG-mJyOgCH",
-            "assistant_url": "https://api.us-south.assistant.watson.cloud.ibm.com/instances/5cbca431-8e08-4dae-93ee-be64087a0014",
-            "assistant_version": "2020-04-01",
-            "assistant_id": "7446c074-e90d-4681-963d-041655bac6ee",
-            "session_id": '7d918749-04bd-44f7-913c-707a745729b7'
+app = Flask(__name__)
+api = Api(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-        }
-    
 def watson_create_session():
 
-    iam_apikey = request_data.get("assistant_api_key")
-    assistant_url = request_data.get("assistant_url")
-    assistant_version = request_data.get('assistant_version')
+    iam_apikey = os.getenv("assistant_api_key")
+    assistant_url = os.getenv("assistant_url")
+    assistant_version = os.getenv('assistant_version')
 
     assistant = watson_instance(iam_apikey, assistant_url, assistant_version)
 
     try:
         watson_session = assistant.create_session(
-            assistant_id=request_data.get("assistant_id")
+            assistant_id=os.getenv("assistant_id")
         ).get_result()
         watson_session_id = watson_session["session_id"]
     except KeyError:
@@ -38,20 +41,19 @@ def watson_create_session():
 
     return watson_session_id
 
-
-def watson_response(message: str):
+def watson_response(session_id:str, message: str):
     
-    iam_apikey = request_data.get("assistant_api_key")
-    assistant_url = request_data.get("assistant_url")
-    assistant_version = request_data.get('assistant_version')
+    iam_apikey = os.getenv("assistant_api_key")
+    assistant_url = os.getenv("assistant_url")
+    assistant_version = os.getenv('assistant_version')
 
     assistant = watson_instance(iam_apikey, assistant_url, assistant_version)
-    context = request_data.get('context') if 'context' in request_data else {}
-    watson_session_id = watson_create_session()
-
+    context = ""
+    watson_answer = ""
+    watson_session_id = session_id
     try:
         watson_response = assistant.message(
-            assistant_id=request_data.get('assistant_id'),
+            assistant_id=os.getenv('assistant_id'),
             session_id=watson_session_id,
             input={
                 'message_type': 'text',
@@ -59,8 +61,7 @@ def watson_response(message: str):
                 'options': {
                     'return_context': True
                 }
-            },
-            context=context
+            }
         ).get_result()
     except ValueError as ex:
         _logger.error("Value error: %s", ex)
@@ -68,13 +69,12 @@ def watson_response(message: str):
     except ApiException:
         try:
             watson_session = assistant.create_session(
-                assistant_id=request_data.get("assistant_id")
+                assistant_id=os.getenv("assistant_id")
             ).get_result()
-            watson_session_id = watson_session["session_id"]
-
+            watson_session_id = session_id
             watson_response = assistant.message(
-                assistant_id=request_data.get('assistant_id'),
-                session_id=watson_session_id,
+                assistant_id=os.getenv('assistant_id'),
+                session_id=session_id,
                 input={
                     'message_type': 'text',
                     'text': message,
@@ -82,7 +82,6 @@ def watson_response(message: str):
                         'return_context': True
                     }
                 },
-                context=context
             ).get_result()
         except KeyError:
             _logger.error("The session wasn't created")
@@ -97,8 +96,10 @@ def watson_response(message: str):
         "response": watson_response,
         "session_id": watson_session_id
     }
-
-    return response.get("response", {}).get("output", {}).get("generic", [])[0].get("text", "")
+    watson_answer = response.get("response", {}).get("output", {}).get("generic", [])[0].get("text", "")
+    #watson_intent = response.get("response", {}).get("output", {}).get("intents", [])[0].get("intent", "")
+    #print(watson_intent)
+    return watson_answer
 
 def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> AssistantV2:
     try:
@@ -114,4 +115,15 @@ def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> A
 
     return assistant
 
-print(watson_response("hola"))
+#print(watson_response(watson_create_session(), "como estas"))
+
+class GET_MESSAGE(Resource):
+    def post(self):
+        message = request.json["message"]
+        watson_answer = watson_response(watson_create_session(), message)
+        return jsonify( response_watson = watson_answer)
+
+api.add_resource(GET_MESSAGE, '/getMessage')  # Route_1
+
+if __name__ == '__main__':
+    app.run(port='5002')
