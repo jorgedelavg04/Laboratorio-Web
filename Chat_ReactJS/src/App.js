@@ -10,29 +10,31 @@ import User from "./Pages/User";
 import ChatBot from 'react-simple-chatbot';
 import axios from 'axios';
 
-const handleNewUserMessage = (newMessage) => {
-  //handleSubmit(newMessage);
-  addResponseMessage("Hola");
+const handleNewUserMessage = (newMessage) => { 
+  sendData(newMessage).then(function(response) {
+    console.log(response)
+    addResponseMessage(String(response));
+  });
+  sendData(newMessage).then(console.log("Enviado"));
+  
 };
 
-var watson_response = ""
+const url = 'http://127.0.0.1:5002/getMessage'
+async function sendData(messageFromUser) {
 
-function sendData(messageFromUser) {
-
-  axios.post('http://127.0.0.1:5002/getMessage', {
+  return axios.post(url, {
     message: messageFromUser
   })
-  
-  .then(async function (response) {
-      watson_response = response.data.response_watson;
-      console.log(watson_response);
-      //return watson_response;
+  .then((response) => {
+    const watson_response = response.data.response_watson;
+    console.log(watson_response);
+    return watson_response;
   })
   .catch(function (error) {
-      console.log(error);
+      console.log("Error: " + error );
   });
+  
 }
-
 
 export default function App() {
   return (
