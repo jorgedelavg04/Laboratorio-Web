@@ -8,40 +8,40 @@ import Home from "./Pages/Home";
 import LandingPage from "./Pages/LandingPage";
 import User from "./Pages/User";
 import ChatBot from 'react-simple-chatbot';
+import axios from 'axios';
 
 const handleNewUserMessage = (newMessage) => {
-  
-  
-  addResponseMessage("perro");
+  //handleSubmit(newMessage);
+  addResponseMessage("Hola");
 };
+
+var watson_response = ""
+
+function sendData(messageFromUser) {
+
+  axios.post('http://127.0.0.1:5002/getMessage', {
+    message: messageFromUser
+  })
+  
+  .then(async function (response) {
+      watson_response = response.data.response_watson;
+      console.log(watson_response);
+      //return watson_response;
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+}
+
 
 export default function App() {
   return (
     <Router>
       <NavBar />
-      <ChatBot
-        steps={[
-          {
-            id: '1',
-            message: 'What is your name?',
-            trigger: '2',
-          },
-          {
-            id: '2',
-            user: true,
-            trigger: '3',
-          },
-          {
-            id: '3',
-            component: (
-              <div>
-                <h2><i>Hi, <sub>nice</sub> to meet you!</i></h2>
-              </div>
-            ),
-            end: true,
-          },
-        ]}
-        floating={true}
+      <Widget
+        handleNewUserMessage={handleNewUserMessage}
+        title="TEC"
+        subtitle="And my cool subtitle"
       />
       <Switch>
         <Route exact path="/">
