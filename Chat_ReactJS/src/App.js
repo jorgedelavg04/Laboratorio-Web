@@ -12,11 +12,8 @@ import axios from 'axios';
 
 const handleNewUserMessage = (newMessage) => { 
   sendData(newMessage).then(function(response) {
-    console.log(response)
-    addResponseMessage(String(response));
+    addResponseMessage(String(response[0]));
   });
-  sendData(newMessage).then(console.log("Enviado"));
-  
 };
 
 const url = 'http://127.0.0.1:5002/getMessage'
@@ -26,9 +23,11 @@ async function sendData(messageFromUser) {
     message: messageFromUser
   })
   .then((response) => {
-    const watson_response = response.data.response_watson;
-    console.log(watson_response);
-    return watson_response;
+    const watson_response = response.data.response_watson.watson_answer;
+    const watson_intent = response.data.response_watson.watson_intent;
+    var array_response = []
+    array_response = [watson_response, watson_intent]
+    return array_response;
   })
   .catch(function (error) {
       console.log("Error: " + error );
@@ -42,8 +41,8 @@ export default function App() {
       <NavBar />
       <Widget
         handleNewUserMessage={handleNewUserMessage}
-        title="TEC"
-        subtitle="And my cool subtitle"
+        title="Laboratorio Web"
+        subtitle="Bienvenido"
       />
       <Switch>
         <Route exact path="/">
