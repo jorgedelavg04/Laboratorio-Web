@@ -8,40 +8,41 @@ import Home from "./Pages/Home";
 import LandingPage from "./Pages/LandingPage";
 import User from "./Pages/User";
 import ChatBot from 'react-simple-chatbot';
+import axios from 'axios';
 
-const handleNewUserMessage = (newMessage) => {
-  
-  
-  addResponseMessage("perro");
+const handleNewUserMessage = (newMessage) => { 
+  sendData(newMessage).then(function(response) {
+    addResponseMessage(String(response[0]));
+  });
 };
+
+const url = 'http://127.0.0.1:5002/getMessage'
+async function sendData(messageFromUser) {
+
+  return axios.post(url, {
+    message: messageFromUser
+  })
+  .then((response) => {
+    const watson_response = response.data.response_watson.watson_answer;
+    const watson_intent = response.data.response_watson.watson_intent;
+    var array_response = []
+    array_response = [watson_response, watson_intent]
+    return array_response;
+  })
+  .catch(function (error) {
+      console.log("Error: " + error );
+  });
+  
+}
 
 export default function App() {
   return (
     <Router>
       <NavBar />
-      <ChatBot
-        steps={[
-          {
-            id: '1',
-            message: 'What is your name?',
-            trigger: '2',
-          },
-          {
-            id: '2',
-            user: true,
-            trigger: '3',
-          },
-          {
-            id: '3',
-            component: (
-              <div>
-                <h2><i>Hi, <sub>nice</sub> to meet you!</i></h2>
-              </div>
-            ),
-            end: true,
-          },
-        ]}
-        floating={true}
+      <Widget
+        handleNewUserMessage={handleNewUserMessage}
+        title="Laboratorio Web"
+        subtitle="Bienvenido"
       />
       <Switch>
         <Route exact path="/">

@@ -97,9 +97,20 @@ def watson_response(session_id:str, message: str):
         "session_id": watson_session_id
     }
     watson_answer = response.get("response", {}).get("output", {}).get("generic", [])[0].get("text", "")
-    #watson_intent = response.get("response", {}).get("output", {}).get("intents", [])[0].get("intent", "")
-    #print(watson_intent)
-    return watson_answer
+    watson_intent_array = response.get("response", {}).get("output", {}).get("intents", [])
+    watson_intent = ""
+    for intent in watson_intent_array:
+        if not intent.get("intent"):
+            watson_intent = "Default"
+        else:
+            watson_intent = intent.get("intent")
+
+    final_response = {
+        "watson_answer": watson_answer,
+        "watson_intent": watson_intent
+    }
+    #return watson_response
+    return final_response
 
 def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> AssistantV2:
     try:
