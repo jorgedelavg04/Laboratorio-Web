@@ -7,7 +7,7 @@ import "react-chat-widget/lib/styles.css";
 import Home from "./Pages/Home";
 import LandingPage from "./Pages/LandingPage";
 import User from "./Pages/User";
-import ChatBot from 'react-simple-chatbot';
+import ReactHtmlParser from 'html-react-parser';
 import axios from 'axios';
 
 const handleNewUserMessage = (newMessage) => { 
@@ -32,7 +32,6 @@ async function sendData(messageFromUser) {
   .catch(function (error) {
       console.log("Error: " + error );
   });
-  
 }
 
 export default function App() {
