@@ -28,6 +28,15 @@
   color: #61dafb;
 }
 
+.speech-bubble {
+  background-color: #efefef;
+  border-radius: 10px;
+  padding: 15px;
+  max-width: 215px;
+  text-align: left;
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
