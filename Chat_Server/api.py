@@ -96,18 +96,26 @@ def watson_response(message: str):
         "response": watson_response,
         "session_id": watson_session_id
     }
+    watson_context_variable = response.get("response", {}).get("context", {}).get("skills", {}).get("main skill", {}).get("user_defined", {})
+    print(watson_context_variable)
     watson_answer = response.get("response", {}).get("output", {}).get("generic", [])[0].get("text", "")
     watson_intent_array = response.get("response", {}).get("output", {}).get("intents", [])
     watson_intent = ""
+    watson_context_nombre = ""
     for intent in watson_intent_array:
         if not intent.get("intent"):
             watson_intent = "Default"
         else:
             watson_intent = intent.get("intent")
 
+    for key, value in watson_context_variable.items():
+          if key == 'nombre':
+              watson_context_nombre = value
+
     final_response = {
         "watson_answer": watson_answer,
-        "watson_intent": watson_intent
+        "watson_intent": watson_intent,
+        "watson_context_nombre": watson_context_nombre
     }
     return final_response
 
@@ -127,17 +135,21 @@ def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> A
 
 class GET_MESSAGE(Resource):
     
-    if os.getenv('session_id') == "":
-        os.environ['session_id'] = watson_create_session()
+    #if os.getenv('session_id') == "":
+    #    os.environ['session_id'] = watson_create_session()
 
     def post(self):
+        if os.getenv('session_id') == "":
+            os.environ['session_id'] = watson_create_session()
         print(os.getenv("session_id"))
         message = request.json["message"]
         watson_answer = watson_response(message)
-        
+        if message == "RESET":
+            os.environ['session_id'] = watson_create_session()
         #Cerrar sesión si el usuario termina la conversación
         if watson_answer.get("watson_answer") == "<p>Gracias, vuelve pronto 🙌.</p>":
-            os.environ['session_id'] = watson_create_session()
+            #os.environ['session_id'] = watson_create_session()
+            os.environ['session_id'] = ""
         
         return jsonify( response_watson = watson_answer)
 
