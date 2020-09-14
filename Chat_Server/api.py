@@ -38,10 +38,9 @@ def watson_create_session():
     except KeyError:
         _logger.error("The session wasn't created")
         return jsonify({"error": "Error creating the session"}), status.HTTP_503_SERVICE_UNAVAILABLE
-
     return watson_session_id
 
-def watson_response(session_id:str, message: str):
+def watson_response(message: str):
     
     iam_apikey = os.getenv("assistant_api_key")
     assistant_url = os.getenv("assistant_url")
@@ -50,7 +49,8 @@ def watson_response(session_id:str, message: str):
     assistant = watson_instance(iam_apikey, assistant_url, assistant_version)
     context = ""
     watson_answer = ""
-    watson_session_id = session_id
+    watson_session_id = os.getenv('session_id')
+
     try:
         watson_response = assistant.message(
             assistant_id=os.getenv('assistant_id'),
@@ -71,10 +71,10 @@ def watson_response(session_id:str, message: str):
             watson_session = assistant.create_session(
                 assistant_id=os.getenv("assistant_id")
             ).get_result()
-            watson_session_id = session_id
+            watson_session_id = os.getenv('session_id')
             watson_response = assistant.message(
                 assistant_id=os.getenv('assistant_id'),
-                session_id=session_id,
+                session_id=os.getenv('session_id'),
                 input={
                     'message_type': 'text',
                     'text': message,
@@ -109,7 +109,6 @@ def watson_response(session_id:str, message: str):
         "watson_answer": watson_answer,
         "watson_intent": watson_intent
     }
-    #return watson_response
     return final_response
 
 def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> AssistantV2:
@@ -126,12 +125,20 @@ def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> A
 
     return assistant
 
-#print(watson_response(watson_create_session(), "como estas"))
-
 class GET_MESSAGE(Resource):
+    
+    if os.getenv('session_id') == "":
+        os.environ['session_id'] = watson_create_session()
+
     def post(self):
+        print(os.getenv("session_id"))
         message = request.json["message"]
-        watson_answer = watson_response(watson_create_session(), message)
+        watson_answer = watson_response(message)
+        
+        #Cerrar sesión si el usuario termina la conversación
+        if watson_answer.get("watson_answer") == "<p>Gracias, vuelve pronto 🙌.</p>":
+            os.environ['session_id'] = watson_create_session()
+        
         return jsonify( response_watson = watson_answer)
 
 api.add_resource(GET_MESSAGE, '/getMessage')  # Route_1
