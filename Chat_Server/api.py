@@ -97,11 +97,15 @@ def watson_response(message: str):
         "session_id": watson_session_id
     }
     watson_context_variable = response.get("response", {}).get("context", {}).get("skills", {}).get("main skill", {}).get("user_defined", {})
-    print(watson_context_variable)
-    watson_answer = response.get("response", {}).get("output", {}).get("generic", [])[0].get("text", "")
+    watson_answer_array= response.get("response", {}).get("output", {}).get("generic", [])    
     watson_intent_array = response.get("response", {}).get("output", {}).get("intents", [])
     watson_intent = ""
     watson_context_nombre = ""
+    watson_answer = []
+
+    for i in watson_answer_array:
+        watson_answer.append(i.get("text"))
+
     for intent in watson_intent_array:
         if not intent.get("intent"):
             watson_intent = "Default"
@@ -115,7 +119,7 @@ def watson_response(message: str):
     final_response = {
         "watson_answer": watson_answer,
         "watson_intent": watson_intent,
-        "watson_context_nombre": watson_context_nombre
+        "watson_context_nombre": watson_context_nombre,
     }
     return final_response
 
@@ -141,7 +145,6 @@ class GET_MESSAGE(Resource):
     def post(self):
         if os.getenv('session_id') == "":
             os.environ['session_id'] = watson_create_session()
-        print(os.getenv("session_id"))
         message = request.json["message"]
         watson_answer = watson_response(message)
         if message == "RESET":
@@ -150,7 +153,6 @@ class GET_MESSAGE(Resource):
         if watson_answer.get("watson_answer") == "<p>Gracias, vuelve pronto 🙌.</p>":
             #os.environ['session_id'] = watson_create_session()
             os.environ['session_id'] = ""
-        
         return jsonify( response_watson = watson_answer)
 
 api.add_resource(GET_MESSAGE, '/getMessage')  # Route_1
