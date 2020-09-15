@@ -66,9 +66,10 @@ class App extends Component {
         }else if (`${watson_response[property]}` === '<p>¿Te puedo ayudar en algo más?  😊</p>') {
           setQuickButtons([ { label: 'Si', value: 'Si' }, { label: 'No', value: 'No'} ]);
           renderCustomComponent(Text123, {text: `${watson_response[property]}`});
-        }
-        
-        else{
+        }else if (`${watson_response[property]}` === '') {
+          renderCustomComponent(Text123, {text:'<p>Por favor, reformula tu pregunta</p>'});
+          setQuickButtons([]);
+        }else{
           renderCustomComponent(Text123, {text: `${watson_response[property]}`});
           setQuickButtons([]);
         } 
