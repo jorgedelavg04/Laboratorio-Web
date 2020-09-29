@@ -105,6 +105,9 @@ def watson_response(message: str):
 
     for i in watson_answer_array:
         watson_answer.append(i.get("text"))
+        
+    if watson_answer == []:
+        watson_answer.append("<p>Ups...🙃 No entendí tu pregunta. Por favor preguntame de nuevo.</p>")     
 
     for intent in watson_intent_array:
         if not intent.get("intent"):
@@ -147,6 +150,7 @@ class GET_MESSAGE(Resource):
             os.environ['session_id'] = watson_create_session()
         message = request.json["message"]
         watson_answer = watson_response(message)
+        print(watson_answer)
         if message == "RESET":
             os.environ['session_id'] = watson_create_session()
         #Cerrar sesión si el usuario termina la conversación
