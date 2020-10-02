@@ -99,9 +99,7 @@ def watson_response(message: str):
         "session_id": watson_session_id
     }
     watson_context_variable = response.get("response", {}).get("context", {}).get("skills", {}).get("main skill", {}).get("user_defined", {})
-    watson_answer_array= response.get("response", {}).get("output", {}).get("generic", [])    
-    watson_answer_entity= response.get("response", {})
-    
+    watson_answer_array= response.get("response", {}).get("output", {}).get("generic", [])        
     watson_intent_array = response.get("response", {}).get("output", {}).get("intents", [])
     watson_context_variable = response.get("response", {}).get("context", {}).get("skills", {}).get("main skill", {}).get("user_defined", {})
     watson_intent = ""
@@ -162,35 +160,18 @@ def insert_report(intent, nid, message):
     conversation = [{'intent': intent, 'nid': nid, "user_message": message}] 
     reporte.insert_many(conversation)    	
 
-def get_answer(intent):
+def get_answer_from_mongo(intent, nid):
     client = pymongo.MongoClient(uri)    
     db = client.get_database()    
     reporte = db['Intents/NIDs']  
-    total_reporte = reporte.find({"intent": intent }) 
-    response=[]
-    for i in total_reporte:
-        i['_id'] = str(i['_id'])
-        response.append(i)
-    print("response1")
-    print(response)
-    return response
+    total_reporte = ""
+    if intent == "":
+        total_reporte = reporte.find({"nid": nid}) 
+    elif nid == "":
+        total_reporte = reporte.find({"intent": intent}) 
+    else:
+        total_reporte = reporte.find({"nid": intent, "nid": nid}) 
 
-def get_answer2(intent):
-    client = pymongo.MongoClient(uri)    
-    db = client.get_database()    
-    reporte = db['Intents/NIDs']  
-    total_reporte = reporte.find({"nid": intent }) 
-    response=[]
-    for i in total_reporte:
-        i['_id'] = str(i['_id'])
-        response.append(i)
-    return response
-
-def get_answer3(intent, nid):
-    client = pymongo.MongoClient(uri)    
-    db = client.get_database()    
-    reporte = db['Intents/NIDs']  
-    total_reporte = reporte.find({"nid": intent, "nid": nid}) 
     response=[]
     for i in total_reporte:
         i['_id'] = str(i['_id'])
@@ -208,29 +189,28 @@ class GET_MESSAGE(Resource):
             os.environ['session_id'] = watson_create_session()
         message = request.json["message"]
         watson_answer = watson_response(message)
-        
-        
+
         #### MongoDB
         watson_intent = watson_answer.get("watson_intent", "")
         watson_nid = watson_answer.get("watson_nid", "")
         response_mongo =  ""
         
         if not watson_intent:
-            response_mongo = get_answer2(watson_nid)
+            response_mongo = get_answer_from_mongo("", watson_nid)
 
         elif watson_intent:
-            response_mongo = get_answer(watson_intent)
+            response_mongo = get_answer_from_mongo(watson_intent, "")
         else:
-            response_mongo = get_answer3(watson_intent, watson_nid)
+            response_mongo = get_answer_from_mongo(watson_intent, watson_nid)
         
         if watson_nid == "ReporteFuga/Capacidad/Calles" or watson_nid == "ReporteFuga/Capacidad/Calles/Descripción" or watson_nid == "reporte-realizado" or watson_nid == "comentario-neutro-si":
-           response_mongo = get_answer2(watson_nid)
+           response_mongo = get_answer_from_mongo("", watson_nid)
 
         if watson_nid == "secretario" and watson_intent == "acerca-de":
-            response_mongo = get_answer2(watson_nid)
+            response_mongo = get_answer_from_mongo("", watson_nid)
 
         if watson_nid == "comentarios_neutros" and watson_nid=="comentario-neutro-si":
-            response_mongo = get_anwswer2(watson_nid)
+            response_mongo = get_answer_from_mongo("", watson_nid)
 
         response_to_user=""
 
