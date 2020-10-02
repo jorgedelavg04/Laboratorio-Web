@@ -40,49 +40,54 @@ class widget extends Component {
     })
     .then((response) => {
       console.log(response);
-      const watson_intent = response.data.response_watson.watson_intent;
-      const watson_context_nombre = response.data.response_watson.watson_context_nombre;
-      const watson_response = response.data.response_watson.watson_answer;
-      var array_response = [];
-      array_response = [watson_response, watson_intent, watson_context_nombre];
       
-      if (watson_intent === 'General_Greetings') {
+      const watson_intent = response.data.intent;
+      const watson_nid = response.data.nid;
+      const watson_response = response.data.response;
+      
+      console.log(watson_response)
+      console.log(watson_intent)
+      console.log(watson_nid)
+    
+      if (watson_intent == "General_Greetings") {
         renderCustomComponent(Image, {src: chatbot});
-      }
-
-      for (const property in watson_response) {
-        if (`${watson_response[property]}` === "<p>"+watson_context_nombre+",  ¿qué puedo hacer por ti?</p>") {
-          renderCustomComponent(Text123, {text: `${watson_response[property]}`});
-          setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
-        }else if (`${watson_response[property]}` === "<p>¡Te deseamos mucho éxito! 😍 ¡Fue un placer atenderte! 👋</p>") {
+        renderCustomComponent(Text123, {text: watson_response});
+        renderCustomComponent(Text123, {text: "<p>¿En que puedo ayudarte?</p>"});
+        setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
+      }else if(watson_intent == "ReportarFuga"){
+        for (var key in watson_response){
+          renderCustomComponent(Text123, {text: watson_response[key]});
           setQuickButtons([]);
-          renderCustomComponent(Image, {src: good_job});
-          renderCustomComponent(Text123, {text: `${watson_response[property]}`});
-        }else if (`${watson_response[property]}` === '<p>¿Te puedo ayudar en algo más?  😊</p>') {
+        }
+      }else if(watson_nid == "reporte-realizado") {
+        for (var key in watson_response){
+          renderCustomComponent(Text123, {text: watson_response[key]});
           setQuickButtons([ { label: 'Si', value: 'Si' }, { label: 'No', value: 'No'} ]);
-          renderCustomComponent(Text123, {text: `${watson_response[property]}`});
-        }else if (`${watson_response[property]}` === '') {
-          renderCustomComponent(Text123, {text:'<p>Por favor, reformula tu pregunta</p>'});
-          setQuickButtons([]);
-        }else if (watson_intent === 'Oficina') {
-            renderCustomComponent(Text123, {text: `${watson_response[property]}`});
-            setQuickButtons([ { label: 'Sobre nosotros', value: 'Sobre nosotros' } ]);
-        }else if (`${watson_response[property]}` === '<p>A partir del 1 de enero de 2003 entró en funcionamiento el Sistema de Aguas de la Ciudad de México (<strong>SACMEX</strong>), por decreto del Jefe de Gobierno del Distrito Federal, Lic. Andrés Manuel López Obrador, al fusionar la entonces Dirección General de Construcción y Operación Hidráulica (DGCOH) y la Comisión de Aguas del Distrito Federal (CADF). </p>') {
-            renderCustomComponent(Text123, {text: `${watson_response[property]}`});
-            setQuickButtons([ { label: 'Nuestro coordinador', value: 'Nuestro coordinador' } ]);
-        }else if(`${watson_response[property]}` === '<p>El Coordinador General del Sistema de Aguas de la CDMX es <strong>Rafael Bernardo Carmona Paredes</strong></p>\n<p>Su teléfono es 5551304444 ext. 1316, 1317, 1319</p>' ) {
-            setQuickButtons([]);
-            renderCustomComponent(Image, {src: titular});
-            renderCustomComponent(Text123, {text: `${watson_response[property]}`});
         }
-        else{
-          renderCustomComponent(Text123, {text: `${watson_response[property]}`});
+      }else if (watson_intent == "small_talk_duda_generica"){
+        for (var key in watson_response){
+          renderCustomComponent(Text123, {text: watson_response[key]});
           setQuickButtons([]);
         }
+        setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
+      }else if (watson_intent == "Oficina") {
+        renderCustomComponent(Text123, {text: watson_response});
+        setQuickButtons([ { label: 'Sobre nosotros', value: 'Sobre nosotros' } ]);
+      }else if (watson_nid == "anyelse-info") {
+        renderCustomComponent(Text123, {text: watson_response});
+        setQuickButtons([ { label: 'Nuestro coordinador', value: 'Nuestro coordinador' } ]);
+      }else if (watson_nid == "secretario") {
+        setQuickButtons([]);
+        renderCustomComponent(Image, {src: titular});
+        renderCustomComponent(Text123, {text: watson_response});
+      }
+      else{
+        renderCustomComponent(Text123, {text: watson_response});
+        setQuickButtons([]);
       }
       toggleMsgLoader();
 
-      return array_response;
+      //return array_response;
     })
     .catch(function (error) {
         console.log("Error: " + error );
