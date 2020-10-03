@@ -39,15 +39,10 @@ class widget extends Component {
       message: messageFromUser
     })
     .then((response) => {
-      console.log(response);
-      
+
       const watson_intent = response.data.intent;
       const watson_nid = response.data.nid;
       const watson_response = response.data.response;
-      
-      console.log(watson_response)
-      console.log(watson_intent)
-      console.log(watson_nid)
     
       if (watson_intent == "General_Greetings") {
         renderCustomComponent(Image, {src: chatbot});
@@ -87,7 +82,6 @@ class widget extends Component {
       }
       toggleMsgLoader();
 
-      //return array_response;
     })
     .catch(function (error) {
         console.log("Error: " + error );
