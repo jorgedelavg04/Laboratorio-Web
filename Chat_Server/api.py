@@ -152,8 +152,7 @@ def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> A
 
     return assistant
 
-def insert_report(intent, nid, message):    
-	
+def insert_report(intent, nid, message):
     client = pymongo.MongoClient(uri)    
     db = client.get_database()    
     reporte = db['Conversaciones']   
@@ -197,7 +196,6 @@ class GET_MESSAGE(Resource):
         
         if not watson_intent:
             response_mongo = get_answer_from_mongo("", watson_nid)
-
         elif watson_intent:
             response_mongo = get_answer_from_mongo(watson_intent, "")
         else:
@@ -224,13 +222,6 @@ class GET_MESSAGE(Resource):
 
         #Send intent, nid and message to mongo
         insert_report(intent, nid, message)
-        
-        response = {
-            "intent": intent,
-            "nid": nid,
-            "response": response1,
-            "name": name
-        }
 
         if message == "RESET":
             os.environ['session_id'] = watson_create_session()
@@ -240,6 +231,12 @@ class GET_MESSAGE(Resource):
             insert_report(watson_answer.get("watson_intent"), watson_answer.get("watson_answer"), message, "false")
             os.environ['session_id'] = ""
 
+        response = {
+            "intent": intent,
+            "nid": nid,
+            "response": response1,
+            "name": name
+        }
         return response
 
 api.add_resource(GET_MESSAGE, '/getMessage')  # Route_1
