@@ -4,7 +4,7 @@ import json
 import logging
 import requests
 import pymongo
-
+import json
 import flask
 from flask import Flask, request
 from flask_restful import Resource, Api
@@ -16,7 +16,6 @@ from jsonschema import validate, ValidationError
 from ibm_watson import AssistantV2, ApiException
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from flask import jsonify
-
 load_dotenv()
 
 app = Flask(__name__)
@@ -220,15 +219,15 @@ class GET_MESSAGE(Resource):
         response1 = response_to_user.get("response", "")
         name = response_to_user.get("watson_context_nombre", "")
 
+        #COMENTAR PARA EVITAR UN MONSTRUO EN MONGO, SOLO CUANDO ESTEMOS EN PRODUCCION DESCOMENTAR
         #Send intent, nid and message to mongo
-        insert_report(intent, nid, message)
+        #insert_report(intent, nid, message)
 
         if message == "RESET":
             os.environ['session_id'] = watson_create_session()
         #Cerrar sesión si el usuario termina la conversación
         if watson_answer.get("watson_answer") == "<p>Gracias, vuelve pronto 🙌.</p>":
             #os.environ['session_id'] = watson_create_session()
-            insert_report(watson_answer.get("watson_intent"), watson_answer.get("watson_answer"), message, "false")
             os.environ['session_id'] = ""
 
         response = {
