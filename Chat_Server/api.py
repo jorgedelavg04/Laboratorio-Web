@@ -21,7 +21,7 @@ load_dotenv()
 app = Flask(__name__)
 api = Api(app)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
-uri = "mongodb+srv://fugasagua:fugasagua@cluster0.3ckgw.gcp.mongodb.net/Reporte?retryWrites=true&w=majority"
+uri = os.getenv("URI_MONGODB")
 
 def watson_create_session():
 
