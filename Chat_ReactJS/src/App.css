@@ -50,3 +50,13 @@ img {
     transform: rotate(360deg);
   }
 }
+
+.carousel-container {
+  position: relative;
+  max-width: 55%;
+}
+
+.carousel-container .carousel .slide {
+  background-color: white;
+}
+

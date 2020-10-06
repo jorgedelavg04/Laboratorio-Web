@@ -1,13 +1,17 @@
 //React Components
 import React, { Component } from "react";
-import { Widget, addResponseMessage, renderCustomComponent, setQuickButtons, addUserMessage, toggleMsgLoader} from "react-chat-widget";
+import { Widget, renderCustomComponent, setQuickButtons, addUserMessage, toggleMsgLoader} from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import ReactHtmlParser from 'html-react-parser';
 import axios from 'axios';
 import '../App.css';
-import good_job from '../Images/good_job.gif';
-import chatbot from '../Images/chatbot.jpg'
+import logo_cdmx from '../Images/logo_cdmx.jpg';
+import ingenieros from '../Images/ingenieros.jpg';
+import agua from '../Images/agua.jpg';
 import titular from '../Images/titular.jpg'
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import Iframe from "react-iframe";
 
 class Text123 extends Component {
   render() {
@@ -20,6 +24,36 @@ class Image extends Component {
     return <div className="speech-bubble-image"><img src={this.props.src}></img></div>
   }
 }
+
+class DemoCarousel extends Component {
+  render() {
+      return (
+          <div className="carousel-container">
+            <Carousel showThumbs={false} showStatus={false} infiniteLoop useKeyboardArrows autoPlay> 
+              <div>
+                  <img src={this.props.src1} />
+              </div>
+              <div>
+                  <img src={this.props.src2} />
+              </div>
+              <div>
+                  <img src={this.props.src3} />
+              </div>
+            </Carousel>
+          </div>
+      );
+  }
+}
+
+class SimpleMap extends Component {
+  render() {
+    return (
+      // Important! Always set the container height explicitly
+      <Iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.7037959465347!2d-99.13666119999999!3d19.4252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1fed1a5fd3a4d%3A0x8c390d32c3d1510a!2ssacmex!5e0!3m2!1ses-419!2smx!4v1601938761977!5m2!1ses-419!2smx" width="215" height="215" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"/>
+      );
+  }
+}
+
 
 class widget extends Component {
 
@@ -44,34 +78,35 @@ class widget extends Component {
       const watson_nid = response.data.nid;
       const watson_response = response.data.response;
     
-      if (watson_intent == "General_Greetings") {
-        renderCustomComponent(Image, {src: chatbot});
+      if (watson_intent === "General_Greetings") {
+        renderCustomComponent(DemoCarousel, {src1: logo_cdmx, src2: ingenieros, src3: agua});
         renderCustomComponent(Text123, {text: watson_response});
         renderCustomComponent(Text123, {text: "<p>¿En que puedo ayudarte?</p>"});
         setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
-      }else if(watson_intent == "ReportarFuga"){
+      }else if(watson_intent === "ReportarFuga"){
         for (var key in watson_response){
           renderCustomComponent(Text123, {text: watson_response[key]});
           setQuickButtons([]);
         }
-      }else if(watson_nid == "reporte-realizado") {
-        for (var key in watson_response){
-          renderCustomComponent(Text123, {text: watson_response[key]});
+      }else if(watson_nid === "reporte-realizado") {
+        for (var key_nid in watson_response){
+          renderCustomComponent(Text123, {text: watson_response[key_nid]});
           setQuickButtons([ { label: 'Si', value: 'Si' }, { label: 'No', value: 'No'} ]);
         }
-      }else if (watson_intent == "small_talk_duda_generica"){
-        for (var key in watson_response){
-          renderCustomComponent(Text123, {text: watson_response[key]});
+      }else if (watson_intent === "small_talk_duda_generica"){
+        for (var key_nid_2 in watson_response){
+          renderCustomComponent(Text123, {text: watson_response[key_nid_2]});
           setQuickButtons([]);
         }
         setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
-      }else if (watson_intent == "Oficina") {
+      }else if (watson_intent === "Oficina") {
+        renderCustomComponent(SimpleMap);
         renderCustomComponent(Text123, {text: watson_response});
         setQuickButtons([ { label: 'Sobre nosotros', value: 'Sobre nosotros' } ]);
-      }else if (watson_nid == "anyelse-info") {
+      }else if (watson_nid === "anyelse-info") {
         renderCustomComponent(Text123, {text: watson_response});
         setQuickButtons([ { label: 'Nuestro coordinador', value: 'Nuestro coordinador' } ]);
-      }else if (watson_nid == "secretario") {
+      }else if (watson_nid === "secretario") {
         setQuickButtons([]);
         renderCustomComponent(Image, {src: titular});
         renderCustomComponent(Text123, {text: watson_response});
