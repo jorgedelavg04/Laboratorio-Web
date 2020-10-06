@@ -67,7 +67,7 @@ class widget extends Component {
     this.handleNewUserMessage(value);
     
   };
-
+  
   async sendData(messageFromUser) {
     return axios.post('http://127.0.0.1:5002/getMessage', {
       message: messageFromUser
@@ -82,7 +82,7 @@ class widget extends Component {
         renderCustomComponent(DemoCarousel, {src1: logo_cdmx, src2: ingenieros, src3: agua});
         renderCustomComponent(Text123, {text: watson_response});
         renderCustomComponent(Text123, {text: "<p>¿En que puedo ayudarte?</p>"});
-        setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
+        setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'}, { label: 'Realizar Pago', value: 'Realizar Pago'} ]);
       }else if(watson_intent === "ReportarFuga"){
         for (var key in watson_response){
           renderCustomComponent(Text123, {text: watson_response[key]});
@@ -98,7 +98,7 @@ class widget extends Component {
           renderCustomComponent(Text123, {text: watson_response[key_nid_2]});
           setQuickButtons([]);
         }
-        setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'} ]);
+        setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'}, { label: 'Realizar Pago', value: 'Realizar Pago'} ]);
       }else if (watson_intent === "Oficina") {
         renderCustomComponent(SimpleMap);
         renderCustomComponent(Text123, {text: watson_response});
@@ -110,8 +110,12 @@ class widget extends Component {
         setQuickButtons([]);
         renderCustomComponent(Image, {src: titular});
         renderCustomComponent(Text123, {text: watson_response});
-      }
-      else{
+      }else if (watson_nid === "pago" && watson_intent === "pago"){
+        for (var key_nid_3 in watson_response){
+          renderCustomComponent(Text123, {text: watson_response[key_nid_3]});
+          setQuickButtons([]);
+        }
+      }else{
         renderCustomComponent(Text123, {text: watson_response});
         setQuickButtons([]);
       }
