@@ -12,6 +12,7 @@ import titular from '../Images/titular.jpg'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import Iframe from "react-iframe";
+import { useAuth0 } from '@auth0/auth0-react';
 
 class Text123 extends Component {
   render() {

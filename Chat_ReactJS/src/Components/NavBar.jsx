@@ -1,6 +1,8 @@
 import React from "react";
 import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import LogoutButton from "./LogoutButton";
+import LoginButton from "./LoginButton";
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -31,8 +33,10 @@ class NavBar extends React.Component {
             placeholder="Search"
             className="mr-sm-2"
           />
-          <Button variant="outline-info">Search</Button>
+          <LoginButton />
+          <LogoutButton />
         </Form>
+
       </Navbar>
     );
   }

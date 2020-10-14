@@ -8,6 +8,9 @@ import LandingPage from "./Pages/LandingPage";
 import User from "./Pages/User";
 import '../src/App.css';
 import WidgetFA from "./Components/widget";
+import LoginButton from "./Components/LoginButton";
+import LogoutButton from "./Components/LogoutButton";
+import Profile from "./Components/Profile";
 
 
 class App extends Component {
@@ -16,18 +19,8 @@ class App extends Component {
     return (
       <Router>
         <NavBar />
+        <Profile />
         <WidgetFA />
-        <Switch>
-          <Route exact path="/">
-            <LandingPage />
-          </Route>
-          <Route path="/home">
-            <Home />
-          </Route>
-          <Route path="/user">
-            <User />
-          </Route>
-        </Switch>
       </Router>
     );
   }
