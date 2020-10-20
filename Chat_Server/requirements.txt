@@ -13,3 +13,5 @@ requests==2.24.0
 pymongo==3.11.0
 dnspython==2.0.0
 ibm-watson==4.7.1
+twilio==6.46.0
+bs4==0.0.1
