@@ -184,7 +184,7 @@ def send_message_twilio(message: str, img_url: str = None):
     # Your Account Sid and Auth Token from twilio.com/console
     # DANGER! This is insecure. See http://twil.io/secure
     account_sid = 'AC9d43996b41fcb2a38351cf74796d3b52'
-    auth_token = '87d87f9b3b3dc71df3c700a69af09c9d'
+    auth_token = os.getenv('auth_token_twilio')
     client = Client(account_sid, auth_token)
 
     if not img_url:
@@ -368,10 +368,10 @@ class GET_MESSAGE_WHATSAPP(Resource):
         for i in response_mongo:
             response_to_user = i
 
-        intent = response_to_user.get("intent", "")
-        nid = response_to_user.get("nid", "")
-        response1 = response_to_user.get("response", "")
-        name = response_to_user.get("watson_context_nombre", "")
+        intent = response_to_user.get("intent", None)
+        nid = response_to_user.get("nid", None)
+        response1 = response_to_user.get("response", None)
+        name = response_to_user.get("watson_context_nombre", None)
 
         print(intent)
         print(nid)
@@ -382,8 +382,6 @@ class GET_MESSAGE_WHATSAPP(Resource):
         }
 
         messages_to_whats_app(response)
-
-        return response
         
 api.add_resource(GET_MESSAGE_WHATSAPP, '/getMessageWhatsApp')  # Route_1
 
