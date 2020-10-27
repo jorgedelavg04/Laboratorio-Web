@@ -62,6 +62,12 @@ footer {
 #logout-dentro {
     margin-top: 75%;
 }
+
+.nav-link{
+    font-size: 20px;
+    color: #484848!important;
+  }
+
 @media (max-width:968px) {
     #logo{
         float: left !important;

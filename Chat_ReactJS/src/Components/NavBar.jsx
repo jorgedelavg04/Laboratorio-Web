@@ -29,21 +29,13 @@ class NavBar extends React.Component {
             <img src={logo_dependencia} id="logo2"/>
           </Navbar.Brand>
           <Nav className="mr-auto">
-            <Nav.Link href="/home">Home</Nav.Link>
-            <Nav.Link href="/user">User</Nav.Link>
+            <Nav.Link href="/">Inicio</Nav.Link>
+            <Nav.Link href="/user">Estadistica</Nav.Link>
           </Nav>
           <Form inline>
-            <FormControl
-              type="text"
-              onChange={this.searchItem}
-              placeholder="Search"
-              className="mr-sm-2"
-              
-            />
             <LoginButton />
             <LogoutButton />
           </Form>
-
         </Navbar>
       </div>
     );
