@@ -3,7 +3,9 @@ import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LogoutButton from "./LogoutButton";
 import LoginButton from "./LoginButton";
-
+import logo from '../Images/Logo_CDMX.png';
+import logo_dependencia from '../Images/Logo_Dependencia.png';
+import "./components.css";
 class NavBar extends React.Component {
   constructor(props) {
     super(props);
@@ -20,24 +22,30 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="/">NDS</Navbar.Brand>
-        <Nav className="mr-auto">
-          <Nav.Link href="/home">Home</Nav.Link>
-          <Nav.Link href="/user">User</Nav.Link>
-        </Nav>
-        <Form inline>
-          <FormControl
-            type="text"
-            onChange={this.searchItem}
-            placeholder="Search"
-            className="mr-sm-2"
-          />
-          <LoginButton />
-          <LogoutButton />
-        </Form>
+      <div className="navbar-top">
+        <Navbar collapseOnSelect bg="light" variant="dark">
+          <Navbar.Brand href="/">
+            <img src={logo} id="logo"/>
+            <img src={logo_dependencia} id="logo2"/>
+          </Navbar.Brand>
+          <Nav className="mr-auto">
+            <Nav.Link href="/home">Home</Nav.Link>
+            <Nav.Link href="/user">User</Nav.Link>
+          </Nav>
+          <Form inline>
+            <FormControl
+              type="text"
+              onChange={this.searchItem}
+              placeholder="Search"
+              className="mr-sm-2"
+              
+            />
+            <LoginButton />
+            <LogoutButton />
+          </Form>
 
-      </Navbar>
+        </Navbar>
+      </div>
     );
   }
 }

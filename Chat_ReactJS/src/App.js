@@ -11,16 +11,28 @@ import WidgetFA from "./Components/widget";
 import LoginButton from "./Components/LoginButton";
 import LogoutButton from "./Components/LogoutButton";
 import Profile from "./Components/Profile";
-
+import Footer from "./Components/Footer";
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 
 class App extends Component {
 
-  render() {
+  render() {    
     return (
+      
       <Router>
         <NavBar />
-        <Profile />
-        <WidgetFA />
+        <Switch>
+          <Route exact path="/">
+          <Profile />
+          </Route>
+          <Route path="/home">
+            <Home />
+          </Route>
+          <Route path="/user">
+            <User />
+          </Route>
+        </Switch>
+        <Footer />
       </Router>
     );
   }

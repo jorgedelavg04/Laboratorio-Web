@@ -1,0 +1,129 @@
+body {
+    background-color: 	#F8F8F8;
+}
+#logo{
+    float: left !important;
+    margin-top: 0.7% !important;
+    width: 20%;
+}
+
+  
+#logo2 {
+    float: left !important;
+    margin-top: 1.3% !important;
+    width: 20%;
+}
+
+#imagen_cuidate {
+    width: 85%;
+    height: 90%;
+    margin: 0 auto;
+}
+
+.bienvenido {
+    color: #484848;
+}
+
+#card {
+    margin-top: 6%;
+    margin-right: 5%;
+}
+
+#text-reporte {
+    margin-top: 40%;
+    margin-left: 5%;
+}
+.navbar-top {
+    border-bottom: 1px solid #aaa;
+}
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    color: white;
+    text-align: center;
+    border-top: 1px solid #aaa;
+}
+.inside_footer {
+    margin: 0 auto;
+    display: inline-block;
+    
+}
+
+#reporte-dentro-signin {
+    margin-top: 10%;
+    margin-left: 5%;
+    line-height: 36px;
+    
+}
+
+#logout-dentro {
+    margin-top: 75%;
+}
+@media (max-width:968px) {
+    #logo{
+        float: left !important;
+        margin-top: 0.7% !important;
+        width: 40%;
+    }
+    
+    #logo2 {
+        float: left !important;
+        margin-top: 1.7% !important;
+        width: 40%;
+    }
+    
+  }
+
+  @media (max-width:580px) {
+    #logo{
+        float: left !important;
+        margin-top: 0.7% !important;
+        width: 60%;
+    }
+    
+    #logo2 {
+        float: left !important;
+        margin-top: 1.7% !important;
+        width: 60%;
+    }
+    #card {
+        margin-top: 6%;
+        margin-right: 2%;
+        margin-bottom: 30%;
+        margin-left: 2%;
+    }
+    
+    #text-reporte {
+        margin-top: 10%;
+        margin-left: 2%;
+    }
+    .inside_footer {
+        margin: 0 auto;
+        display: inline-block;
+        
+    }
+    #logout-dentro {
+        margin-top: 5%;
+    }
+    #bienvenida-nombre{
+        margin: 0 auto;
+    }
+    #bienvenida-foto{
+        text-align: center;
+    }
+
+    #bienvenido {
+        margin: 0 auto;
+        text-align: center;
+    }
+    #nombree{
+        margin: 0 auto;
+    }
+    .list-group{
+        margin-bottom: 30%;
+        margin-left: -3%;
+    }
+  }
