@@ -186,7 +186,7 @@ def send_message_twilio(message: str, img_url: str = None):
     account_sid = 'AC9d43996b41fcb2a38351cf74796d3b52'
     auth_token = os.getenv('auth_token_twilio')
     client = Client(account_sid, auth_token)
-
+    
     if not img_url:
         message = client.messages.create(
             body=message,
@@ -302,8 +302,6 @@ class GET_MESSAGE(Resource):
         if watson_answer.get("watson_answer") == "<p>Gracias, vuelve pronto 🙌.</p>":
             #os.environ['session_id'] = watson_create_session()
             os.environ['session_id'] = ""
-
-
         
         response = {
             "intent": intent,
@@ -373,8 +371,6 @@ class GET_MESSAGE_WHATSAPP(Resource):
         response1 = response_to_user.get("response", None)
         name = response_to_user.get("watson_context_nombre", None)
 
-        print(intent)
-        print(nid)
         response = {
             "intent": intent,
             "nid": nid,
