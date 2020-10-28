@@ -130,12 +130,15 @@ class widget extends Component {
 
   render() {
     return (
-        <Widget
-          handleNewUserMessage={this.handleNewUserMessage}
-          handleQuickButtonClicked={this.handleQuickButtonClicked}
-          title="Sistema de Reportes de Agua"
-          subtitle="CDMX"
-        />
+        
+      <Widget
+        handleNewUserMessage={this.handleNewUserMessage}
+        handleQuickButtonClicked={this.handleQuickButtonClicked}
+        title="Sistema de Reportes de Agua"
+        subtitle="CDMX"
+        senderPlaceHolder="Escribe aquí ..."
+      />
+        
     );
   }
 }

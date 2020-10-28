@@ -14,25 +14,24 @@ import Profile from "./Components/Profile";
 import Footer from "./Components/Footer";
 import Statistics from "./Components/Statistics";
 import { Auth0Provider, useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
+import Callback from '../src/Components/Callback';
 
 class App extends Component {
-
   render() {    
-    return (
-      
+    return (      
       <Router>
         <NavBar />
-        <Switch>
-          <Route exact path="/">
-          <Profile />
-          </Route>
-          <Route path="/home">
-            <Home />
-          </Route>
-          <Route path="/user">
-            <Statistics />
-          </Route>
-        </Switch>
+          <Switch>
+            <Route exact path="/">
+            <Profile />
+            </Route>
+            <Route path="/home">
+              <Home />
+            </Route>
+            <Route path="/user">
+              <Statistics />
+            </Route>
+          </Switch>
         <Footer />
       </Router>
     );

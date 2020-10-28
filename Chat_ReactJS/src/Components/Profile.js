@@ -5,10 +5,12 @@ import Cuidate from "../Images/cuidate_cdmx.jpeg"
 import { Navbar, Nav, Form, FormControl, Button, Card } from "react-bootstrap";
 import LogoutButton from "./LogoutButton";
 import axios from 'axios';
+import Callback from '../Components/Callback';
+
+
 
 export const Profile = () => {
     const { user, isAuthenticated, loginWithRedirect} = useAuth0();
-    
     return (
         <div>
             {!isAuthenticated && (
@@ -34,42 +36,42 @@ export const Profile = () => {
                     </div>
                 </div>
             )}
-        {isAuthenticated && (
-            <div>
-                <br></br>
-                <div class="container">
-                    <div class="row" id="reporte-dentro-signin">
-                        <div class="col-md-2" id="bienvenida-foto">
-                            <img src={user.picture} alt={user.name}/>
-                        </div>
-                        <div class="col-md-3" id="bienvenida-nombre">
-                            <div class="row" id="bienvenido">
-                                <h2>Bienvenido, </h2>
+            {isAuthenticated && (
+                <div>
+                    <br></br>
+                    <div class="container">
+                        <div class="row" id="reporte-dentro-signin">
+                            <div class="col-md-2" id="bienvenida-foto">
+                                <img src={user.picture} alt={user.name}/>
                             </div>
-                            <div class="row" id="nombree">
-                                <h1>{user.given_name}</h1>
+                            <div class="col-md-3" id="bienvenida-nombre">
+                                <div class="row" id="bienvenido">
+                                    <h2>Bienvenido, </h2>
+                                </div>
+                                <div class="row" id="nombree">
+                                    <h1>{user.given_name}</h1>
+                                </div>
+                                <div class="row" id="logout-dentro">
+                                    <h6>Para cerrar sesión, da clic en el siguiente botón</h6>
+                                    <LogoutButton />
+                                </div>
                             </div>
-                            <div class="row" id="logout-dentro">
-                                <h6>Para cerrar sesión, da clic en el siguiente botón</h6>
-                                <LogoutButton />
+                            <div class="col-md-7">
+                                <h2>Con tu asistente virtual puedes realizar las siguientes funcionalidades: </h2>
+                                <ul class="list-group">
+                                    <li class="list-group-item"><h5>1. Realiza tu reporte</h5></li>
+                                        <li class="list-group-item"><h5>2. Obten información sobre esta dependencia</h5></li>
+                                        <li class="list-group-item"><h5>3. Ir a la liga de pago</h5></li>
+                                        <li class="list-group-item"><h5>4. Información sobre COVID-19</h5></li>
+                                        <li class="list-group-item"><h5>5. ¡Descubre más conversando con él!</h5></li>
+                                    </ul>
                             </div>
-                        </div>
-                        <div class="col-md-7">
-                            <h2>Con tu asistente virtual puedes realizar las siguientes funcionalidades: </h2>
-                            <ul class="list-group">
-                                <li class="list-group-item"><h5>1. Realiza tu reporte</h5></li>
-                                    <li class="list-group-item"><h5>2. Obten información sobre esta dependencia</h5></li>
-                                    <li class="list-group-item"><h5>3. Ir a la liga de pago</h5></li>
-                                    <li class="list-group-item"><h5>4. Información sobre COVID-19</h5></li>
-                                    <li class="list-group-item"><h5>5. ¡Descubre más conversando con él!</h5></li>
-                                </ul>
                         </div>
                     </div>
-                </div>
-                
-                <WidgetFA />
-            </div> 
-        )}
+                    
+                    <WidgetFA />
+                </div> 
+            )   }
         </div>
     )
 }
