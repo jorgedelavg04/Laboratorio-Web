@@ -66,7 +66,30 @@ footer {
 .nav-link{
     font-size: 20px;
     color: #484848!important;
+
   }
+
+.top_experiencias {
+    margin-top: 5%;
+    text-align: center;
+}
+
+#top_e {
+    margin: 0 auto;
+}
+
+#last_bar {
+    padding-bottom: 10%;
+}
+
+.graphics-card{
+  background-color: '#white';
+  padding: 20px;
+  width: 100%;
+}
+.-highlight {
+    border: 1px solid #001724;
+}
 
 @media (max-width:968px) {
     #logo{
@@ -79,6 +102,10 @@ footer {
         float: left !important;
         margin-top: 1.7% !important;
         width: 40%;
+    }
+
+    #last_bar {
+        padding-bottom: 10%;
     }
     
   }
@@ -131,5 +158,8 @@ footer {
     .list-group{
         margin-bottom: 30%;
         margin-left: -3%;
+    }
+    #last_bar {
+        padding-bottom: 20%;
     }
   }

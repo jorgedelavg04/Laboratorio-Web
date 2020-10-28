@@ -13,7 +13,7 @@ import LogoutButton from "./Components/LogoutButton";
 import Profile from "./Components/Profile";
 import Footer from "./Components/Footer";
 import Statistics from "./Components/Statistics";
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import { Auth0Provider, useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 
 class App extends Component {
 

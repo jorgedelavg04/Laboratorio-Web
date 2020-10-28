@@ -30,7 +30,7 @@ class NavBar extends React.Component {
           </Navbar.Brand>
           <Nav className="mr-auto">
             <Nav.Link href="/">Inicio</Nav.Link>
-            <Nav.Link href="/user">Estadistica</Nav.Link>
+            <Nav.Link href="/user">Estadística</Nav.Link>
           </Nav>
           <Form inline>
             <LoginButton />

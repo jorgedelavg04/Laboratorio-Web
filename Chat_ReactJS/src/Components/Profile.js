@@ -4,6 +4,8 @@ import WidgetFA from "./widget";
 import Cuidate from "../Images/cuidate_cdmx.jpeg"
 import { Navbar, Nav, Form, FormControl, Button, Card } from "react-bootstrap";
 import LogoutButton from "./LogoutButton";
+import axios from 'axios';
+
 export const Profile = () => {
     const { user, isAuthenticated, loginWithRedirect} = useAuth0();
     
