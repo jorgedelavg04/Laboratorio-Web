@@ -155,11 +155,16 @@ def watson_instance(iam_apikey: str, url: str, version: str = "2020-04-01") -> A
 
     return assistant
 
-def insert_report(intent, nid, message):
+def insert_report(intent, nid, message, report: str = None):
     client = pymongo.MongoClient(uri)    
     db = client.get_database()    
     reporte = db['Conversaciones']   
-    conversation = [{'intent': intent, 'nid': nid, "user_message": message}] 
+    
+    if report != None:
+        conversation = [{'intent': intent, 'nid': nid, "user_message": message, "whats_app":"true"}] 
+    else:
+        conversation = [{'intent': intent, 'nid': nid, "user_message": message}] 
+    
     reporte.insert_many(conversation)    	
 
 def get_answer_from_mongo(intent, nid):
@@ -179,6 +184,68 @@ def get_answer_from_mongo(intent, nid):
         i['_id'] = str(i['_id'])
         response.append(i)
     return response
+    
+def get_statistics_from_mongo():
+    client = pymongo.MongoClient(uri)   
+    db = client.get_database()    
+    reporte = db['Conversaciones'] 
+    pipeline = [ 
+        {"$group": {"_id": "$intent", "count": {"$sum": 1}}}
+    ]
+    result = list(reporte.aggregate(pipeline))
+    response = {}
+    intents_used = {}
+    contador = 0
+
+    numero_reportes = 0
+    numero_otros = 0
+    for i in result:
+        contador += 1
+        if i["_id"] == "":
+            continue  
+        intents_used[str(i.get("_id", ""))] = i.get("count", 0)
+        
+        if i.get("_id", "") == "ReportarFuga":
+            numero_reportes = i.get("count", 0)
+        else:
+            numero_otros = i.get("count", 0)
+
+    intents_not_sorted = (sorted(intents_used.items(), key=lambda x:x[1], reverse=True))
+    sorted_intents = {}
+    for i in intents_not_sorted:
+        sorted_intents[i[0]] = i[1]
+
+    pipeline2 = [ 
+        {"$group": {"_id": "$whats_app", "count": {"$sum": 1}}}
+    ]
+    result_whats = list(reporte.aggregate(pipeline2))
+    number_whats = 0
+    number_widget = 0
+    total_tp = 0
+    for i in result_whats:
+        print(i)
+        if i.get("_id", None) == "true":
+            number_whats = i.get("count", None)
+        else:
+            number_widget = i.get("count", None)
+
+    total_tp = number_widget + number_whats
+    try:
+        number_widget = round((number_widget/total_tp) * 100, 2)
+        number_whats = round((number_whats/total_tp) * 100, 2)
+    except ZeroDivisionError:
+        number_widget = 0
+        number_whats = 0
+    
+    response = {
+        "intents_used": sorted_intents,
+        "number_widget": number_widget,
+        "number_whats": number_whats,
+        "numero_reportes": numero_reportes,
+        "numero_otros": numero_otros
+    }
+    return response
+    
 
 def send_message_twilio(message: str, img_url: str = None):
     # Your Account Sid and Auth Token from twilio.com/console
@@ -208,7 +275,6 @@ def html_to_text(message):
 def messages_to_whats_app(message: dict):
     watson_intent = message.get("intent", None)
     watson_nid = message.get("nid", None)
-    
     if watson_intent == "General_Greetings":
         response_to_whats_app = html_to_text(message.get("response", None))
         send_message_twilio(response_to_whats_app + "\n" + " \n ¿En que puedo ayudarte?", "https://i.ibb.co/k4DTyXs/CDMX.jpg")
@@ -371,6 +437,8 @@ class GET_MESSAGE_WHATSAPP(Resource):
         response1 = response_to_user.get("response", None)
         name = response_to_user.get("watson_context_nombre", None)
 
+        #REPORTES A MONGO
+        #insert_report(watson_intent, watson_nid, message, "whatsapp")
         response = {
             "intent": intent,
             "nid": nid,
@@ -380,6 +448,15 @@ class GET_MESSAGE_WHATSAPP(Resource):
         messages_to_whats_app(response)
         
 api.add_resource(GET_MESSAGE_WHATSAPP, '/getMessageWhatsApp')  # Route_1
+
+class GET_STATISTICS(Resource):
+
+    def get(self):
+        statistics_mongo = get_statistics_from_mongo()
+        return statistics_mongo  
+     
+api.add_resource(GET_STATISTICS, '/getStatistics')  # Route_1
+
 
 if __name__ == '__main__':
     app.run(port='5002')
