@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from flask_api import status
 from twilio.rest import Client
 from twilio import twiml
+from twilio.twiml.messaging_response import Message, MessagingResponse
 from bs4 import BeautifulSoup
 from jsonschema import validate, ValidationError
 from ibm_watson import AssistantV2, ApiException
@@ -204,7 +205,7 @@ def get_statistics_from_mongo():
         if i["_id"] == "":
             continue  
         intents_used[str(i.get("_id", ""))] = i.get("count", 0)
-        
+ 
         if i.get("_id", "") == "ReportarFuga":
             numero_reportes = i.get("count", 0)
         else:
@@ -253,19 +254,20 @@ def send_message_twilio(message: str, img_url: str = None):
     account_sid = 'AC9d43996b41fcb2a38351cf74796d3b52'
     auth_token = os.getenv('auth_token_twilio')
     client = Client(account_sid, auth_token)
-    
+    number = request.values.get('From', '')
+
     if not img_url:
         message = client.messages.create(
             body=message,
             from_='whatsapp:+14155238886',
-            to='whatsapp:+5215530325689',
+            to=number,
         )
     else:
         message = client.messages.create(
             media_url=[img_url],
             body=message,
             from_='whatsapp:+14155238886',
-            to='whatsapp:+5215530325689',
+            to=number,
         )
 
 def html_to_text(message):
@@ -322,6 +324,7 @@ class GET_MESSAGE(Resource):
     #   os.environ['session_id'] = watson_create_session()
 
     def post(self):
+        print(request.json)
         if os.getenv('session_id') == "":
             os.environ['session_id'] = watson_create_session()
         message = request.json["message"]        
@@ -360,7 +363,7 @@ class GET_MESSAGE(Resource):
 
         #COMENTAR PARA EVITAR UN MONSTRUO EN MONGO, SOLO CUANDO ESTEMOS EN PRODUCCION DESCOMENTAR
         #Send intent, nid and message to mongo
-        #insert_report(intent, nid, message)
+        insert_report(intent, nid, message)
 
         if message == "RESET":
             os.environ['session_id'] = watson_create_session()
@@ -438,7 +441,7 @@ class GET_MESSAGE_WHATSAPP(Resource):
         name = response_to_user.get("watson_context_nombre", None)
 
         #REPORTES A MONGO
-        #insert_report(watson_intent, watson_nid, message, "whatsapp")
+        insert_report(watson_intent, watson_nid, message, "whatsapp")
         response = {
             "intent": intent,
             "nid": nid,
@@ -449,6 +452,7 @@ class GET_MESSAGE_WHATSAPP(Resource):
         
 api.add_resource(GET_MESSAGE_WHATSAPP, '/getMessageWhatsApp')  # Route_1
 
+#ENPOINT FOR FRONT DATA STATISTICS
 class GET_STATISTICS(Resource):
 
     def get(self):
