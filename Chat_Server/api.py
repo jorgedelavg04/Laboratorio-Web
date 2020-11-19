@@ -386,12 +386,15 @@ api.add_resource(GET_MESSAGE, '/getMessage')  # Route_1
 class GET_MESSAGE_WHATSAPP(Resource):
 
     def post(self):
-        print("RECIBI MENSAJE")
+        print("RECIBI MENSAJEE")
         if os.getenv('session_id') == "":
             os.environ['session_id'] = watson_create_session()
         
         #Receive message from Twilio
         message = request.form['Body']
+        
+        """ longitude = request.form['Longitude']
+        latitude = request.form['Latitude'] """
 
         if message == "1)" or message == "1":
              watson_answer = watson_response("Hacer un reporte")
@@ -413,6 +416,7 @@ class GET_MESSAGE_WHATSAPP(Resource):
         watson_intent = watson_answer.get("watson_intent", "")
         watson_nid = watson_answer.get("watson_nid", "")
         response_mongo =  ""
+
         
         if not watson_intent:
             response_mongo = get_answer_from_mongo("", watson_nid)
@@ -447,6 +451,10 @@ class GET_MESSAGE_WHATSAPP(Resource):
             "nid": nid,
             "response": response1,
         }
+
+        print(intent)
+        print(nid)
+        print(response1)
 
         messages_to_whats_app(response)
         
