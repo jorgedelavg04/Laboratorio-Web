@@ -15,3 +15,4 @@ dnspython==2.0.0
 ibm-watson==4.7.1
 twilio==6.46.0
 bs4==0.0.1
+gmplot==1.4.1

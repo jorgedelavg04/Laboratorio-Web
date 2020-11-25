@@ -21,7 +21,7 @@ from jsonschema import validate, ValidationError
 from ibm_watson import AssistantV2, ApiException
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from flask import jsonify
-import time
+import sched, time, threading
 load_dotenv()
 
 app = Flask(__name__)
@@ -188,7 +188,7 @@ def draw_map(latitude, longitude):
         latitude_list.append(float(data['latitude']))
         longitude_list.append(float(data['longitude']))
     gmap = gmplot.GoogleMapPlotter(float(latitude), float(longitude), 13)
-    gmap.scatter(latitude_list, longitude_list, size= 40, maker = False)
+    gmap.scatter(latitude_list, longitude_list, size= 40, color='red',maker = True)
     gmap.draw('../Chat_ReactJS/public/location.html')
     
 
@@ -248,7 +248,6 @@ def get_statistics_from_mongo():
     number_widget = 0
     total_tp = 0
     for i in result_whats:
-        print(i)
         if i.get("_id", None) == "true":
             number_whats = i.get("count", None)
         else:
@@ -303,10 +302,10 @@ def messages_to_whats_app(message: dict):
     watson_nid = message.get("nid", None)
     if watson_intent == "General_Greetings":
         response_to_whats_app = html_to_text(message.get("response", None))
-        send_message_twilio(response_to_whats_app + "\n" + " \n ¿En que puedo ayudarte?", "https://i.ibb.co/k4DTyXs/CDMX.jpg")
-        time.sleep(1)
+        send_message_twilio(response_to_whats_app + "\n" + " \n ¿En que puedo ayudarte?", "https://i.ibb.co/Sn3MzNT/CDMX.jpg")
+        time.sleep(3)
         send_message_twilio("💡*Temas Relacionados* \n" + "Para más información *escribe el número* de la opción que deseas consultar. 👇\n \n"+ "1) Hacer un reporte \n" + "2) Nuestras Oficinas \n" + "3) Realizar Pago" )
-        send_message_twilio("Por favor compártenos tu ubicación actual seguido de tu acción a realizar para mostrar a los usuarios los lugares de donde se realizan los reportes.")
+        #send_message_twilio("Por favor compártenos tu ubicación actual seguido de tu acción a realizar para mostrar a los usuarios los lugares de donde se realizan los reportes.")
     elif watson_intent == "ReportarFuga":
         message_reporte = message.get("response", None)
         for i in message_reporte:
@@ -338,10 +337,11 @@ def messages_to_whats_app(message: dict):
         send_message_twilio("💡*Temas Relacionados* \n" + "Para más información *escribe el número* de la opción que deseas consultar. 👇\n \n"+ "0) Volver al menú inicial \n" + "5) Nuestro coordinador" )
     elif watson_nid == "secretario": 
         response_to_whats_app = html_to_text(message.get("response", None))
-        send_message_twilio(response_to_whats_app, "https://i.ibb.co/yR1gsSP/rcarmonap.jpg")
+        send_message_twilio(response_to_whats_app, "https://i.ibb.co/Dt54WKq/rcarmonap.jpg")
     else:
         response_to_whats_app = html_to_text(message.get("response", None))
         send_message_twilio(response_to_whats_app)
+
 
 class GET_MESSAGE(Resource):
     
@@ -349,11 +349,11 @@ class GET_MESSAGE(Resource):
     #   os.environ['session_id'] = watson_create_session()
 
     def post(self):
-        print(request.json)
         if os.getenv('session_id') == "":
             os.environ['session_id'] = watson_create_session()
         message = request.json["message"]        
         watson_answer = watson_response(message)
+        
 
         #### MongoDB
         watson_intent = watson_answer.get("watson_intent", "")
@@ -423,6 +423,7 @@ class GET_MESSAGE_WHATSAPP(Resource):
             longitude = request.form['Longitude']
             insert_location(latitude, longitude)
             draw_map(latitude, longitude)
+            watson_answer = watson_response("Hemos usado la latitud y longitud, gracias.")
         elif message == "1)" or message == "1":
              watson_answer = watson_response("Hacer un reporte")
         elif message == "2)" or message == "2":
@@ -438,7 +439,7 @@ class GET_MESSAGE_WHATSAPP(Resource):
         else:
             watson_answer = watson_response(message)
         #watson_answer = watson_response(message)
-        
+
         #### MongoDB
         if watson_answer != "":
             watson_intent = watson_answer.get("watson_intent", "")
@@ -491,6 +492,26 @@ class GET_STATISTICS(Resource):
         return statistics_mongo  
      
 api.add_resource(GET_STATISTICS, '/getStatistics')  # Route_1
+
+#ENPOINT FOR FRONT DATA STATISTICS
+class KEEP_WORKING(Resource):
+    def get(self):
+        return "OK" 
+
+    def print_every_n_seconds(n=240):
+        while True:
+            if os.getenv('session_id') == "":
+                os.environ['session_id'] = watson_create_session()
+            watson_answer = watson_response("Hola")
+            print(watson_answer)
+            print(time.ctime())
+            time.sleep(n)
+        
+    thread = threading.Thread(target=print_every_n_seconds, daemon=True)
+    thread.start()
+    
+api.add_resource(KEEP_WORKING, '/')  # Route_1
+
 
 
 if __name__ == '__main__':
