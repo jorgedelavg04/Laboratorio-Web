@@ -101,7 +101,6 @@ class widget extends Component {
         }
         setQuickButtons([ { label: 'Hacer un reporte', value: 'Hacer un reporte' }, { label: 'Nuestras Oficinas', value: 'Nuestras Oficinas'}, { label: 'Realizar Pago', value: 'Realizar Pago'} ]);
       }else if (watson_intent === "Oficina") {
-        renderCustomComponent(SimpleMap);
         renderCustomComponent(Text123, {text: watson_response});
         setQuickButtons([ { label: 'Sobre nosotros', value: 'Sobre nosotros' } ]);
       }else if (watson_nid === "anyelse-info") {

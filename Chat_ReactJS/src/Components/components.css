@@ -46,6 +46,16 @@ footer {
     text-align: center;
     border-top: 1px solid #aaa;
 }
+
+iframe {
+    position: absolute;
+    top: 16%;
+    left: 22%;
+    width: 60%;
+    height: 70%;
+    border: 0;
+}
+
 .inside_footer {
     margin: 0 auto;
     display: inline-block;
