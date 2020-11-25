@@ -70,7 +70,7 @@ class widget extends Component {
   };
   
   async sendData(messageFromUser) {
-    return axios.post('http://127.0.0.1:5002/getMessage', {
+    return axios.post('http://0.0.0.0:5000/getMessage', {
       message: messageFromUser
     })
     .then((response) => {

@@ -1,26 +1,32 @@
 {
   "files": {
-    "main.css": "/static/css/main.3a523e6b.chunk.css",
-    "main.js": "/static/js/main.40bc6ba7.chunk.js",
-    "main.js.map": "/static/js/main.40bc6ba7.chunk.js.map",
+    "main.css": "/static/css/main.d7292678.chunk.css",
+    "main.js": "/static/js/main.f9df310a.chunk.js",
+    "main.js.map": "/static/js/main.f9df310a.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.83c3e0c4.js",
     "runtime-main.js.map": "/static/js/runtime-main.83c3e0c4.js.map",
-    "static/css/2.f189c14c.chunk.css": "/static/css/2.f189c14c.chunk.css",
-    "static/js/2.22bae159.chunk.js": "/static/js/2.22bae159.chunk.js",
-    "static/js/2.22bae159.chunk.js.map": "/static/js/2.22bae159.chunk.js.map",
+    "static/css/2.9b8551ef.chunk.css": "/static/css/2.9b8551ef.chunk.css",
+    "static/js/2.c3fb7d72.chunk.js": "/static/js/2.c3fb7d72.chunk.js",
+    "static/js/2.c3fb7d72.chunk.js.map": "/static/js/2.c3fb7d72.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.af0df2d719168226ea8060b7d43f9feb.js": "/precache-manifest.af0df2d719168226ea8060b7d43f9feb.js",
+    "precache-manifest.a7db08892f29c54f57dd1cb54688a533.js": "/precache-manifest.a7db08892f29c54f57dd1cb54688a533.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/2.f189c14c.chunk.css.map": "/static/css/2.f189c14c.chunk.css.map",
-    "static/css/main.3a523e6b.chunk.css.map": "/static/css/main.3a523e6b.chunk.css.map",
-    "static/js/2.22bae159.chunk.js.LICENSE.txt": "/static/js/2.22bae159.chunk.js.LICENSE.txt",
-    "static/media/good_job.gif": "/static/media/good_job.ddc8b759.gif"
+    "static/css/2.9b8551ef.chunk.css.map": "/static/css/2.9b8551ef.chunk.css.map",
+    "static/css/main.d7292678.chunk.css.map": "/static/css/main.d7292678.chunk.css.map",
+    "static/js/2.c3fb7d72.chunk.js.LICENSE.txt": "/static/js/2.c3fb7d72.chunk.js.LICENSE.txt",
+    "static/media/Logo_CDMX.png": "/static/media/Logo_CDMX.7f4421c9.png",
+    "static/media/agua.jpg": "/static/media/agua.df76464b.jpg",
+    "static/media/cuidate_cdmx.jpeg": "/static/media/cuidate_cdmx.9b386af2.jpeg",
+    "static/media/ingenieros.jpg": "/static/media/ingenieros.028ae707.jpg",
+    "static/media/loading.svg": "/static/media/loading.c5590569.svg",
+    "static/media/logo_cdmx.jpg": "/static/media/logo_cdmx.3bc6423b.jpg",
+    "static/media/titular.jpg": "/static/media/titular.e70dd185.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.83c3e0c4.js",
-    "static/css/2.f189c14c.chunk.css",
-    "static/js/2.22bae159.chunk.js",
-    "static/css/main.3a523e6b.chunk.css",
-    "static/js/main.40bc6ba7.chunk.js"
+    "static/css/2.9b8551ef.chunk.css",
+    "static/js/2.c3fb7d72.chunk.js",
+    "static/css/main.d7292678.chunk.css",
+    "static/js/main.f9df310a.chunk.js"
   ]
 }

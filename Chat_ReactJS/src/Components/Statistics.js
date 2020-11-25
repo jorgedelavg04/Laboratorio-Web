@@ -17,7 +17,7 @@ class Statistics extends React.Component {
     }
     
     componentDidMount() {
-        axios.get(`http://127.0.0.1:5002/getStatistics`)
+        axios.get(`http://0.0.0.0:5000/getStatistics`)
           .then(res => {
             const intents_used = res.data.intents_used;
             const number_whats = res.data.number_whats;
