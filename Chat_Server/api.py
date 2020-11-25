@@ -7,6 +7,7 @@ import pymongo
 import json
 import flask
 import html
+import gmplot
 from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_cors import CORS
@@ -166,7 +167,30 @@ def insert_report(intent, nid, message, report: str = None):
     else:
         conversation = [{'intent': intent, 'nid': nid, "user_message": message}] 
     
-    reporte.insert_many(conversation)    	
+    reporte.insert_many(conversation)
+
+def insert_location(latitude, longitude):
+    client = pymongo.MongoClient(uri)
+    db = client.get_database()
+    ubicationColl = db['Ubicaciones']
+    ubicationData = [{'latitude': latitude, 'longitude': longitude}]
+
+    ubicationColl.insert_many(ubicationData)
+
+def draw_map(latitude, longitude):
+    latitude_list = []
+    longitude_list = []
+    client = pymongo.MongoClient(uri)
+    db = client.get_database()
+    col = db['Ubicaciones']
+    locationsList = col.find()
+    for data in locationsList:
+        latitude_list.append(float(data['latitude']))
+        longitude_list.append(float(data['longitude']))
+    gmap = gmplot.GoogleMapPlotter(float(latitude), float(longitude), 13)
+    gmap.scatter(latitude_list, longitude_list, size= 40, maker = False)
+    gmap.draw('../Chat_ReactJS/public/location.html')
+    
 
 def get_answer_from_mongo(intent, nid):
     client = pymongo.MongoClient(uri)    
@@ -282,6 +306,7 @@ def messages_to_whats_app(message: dict):
         send_message_twilio(response_to_whats_app + "\n" + " \n ¿En que puedo ayudarte?", "https://i.ibb.co/k4DTyXs/CDMX.jpg")
         time.sleep(1)
         send_message_twilio("💡*Temas Relacionados* \n" + "Para más información *escribe el número* de la opción que deseas consultar. 👇\n \n"+ "1) Hacer un reporte \n" + "2) Nuestras Oficinas \n" + "3) Realizar Pago" )
+        send_message_twilio("Por favor compártenos tu ubicación actual seguido de tu acción a realizar para mostrar a los usuarios los lugares de donde se realizan los reportes.")
     elif watson_intent == "ReportarFuga":
         message_reporte = message.get("response", None)
         for i in message_reporte:
@@ -390,13 +415,15 @@ class GET_MESSAGE_WHATSAPP(Resource):
         if os.getenv('session_id') == "":
             os.environ['session_id'] = watson_create_session()
         
+        watson_answer = ""
         #Receive message from Twilio
         message = request.form['Body']
-        
-        """ longitude = request.form['Longitude']
-        latitude = request.form['Latitude'] """
-
-        if message == "1)" or message == "1":
+        if 'Latitude' in request.form:
+            latitude = request.form['Latitude']
+            longitude = request.form['Longitude']
+            insert_location(latitude, longitude)
+            draw_map(latitude, longitude)
+        elif message == "1)" or message == "1":
              watson_answer = watson_response("Hacer un reporte")
         elif message == "2)" or message == "2":
             watson_answer = watson_response("Nuestras Oficinas")
@@ -413,50 +440,46 @@ class GET_MESSAGE_WHATSAPP(Resource):
         #watson_answer = watson_response(message)
         
         #### MongoDB
-        watson_intent = watson_answer.get("watson_intent", "")
-        watson_nid = watson_answer.get("watson_nid", "")
-        response_mongo =  ""
+        if watson_answer != "":
+            watson_intent = watson_answer.get("watson_intent", "")
+            watson_nid = watson_answer.get("watson_nid", "")
+            response_mongo =  ""
+            
+            if not watson_intent:
+                response_mongo = get_answer_from_mongo("", watson_nid)
+            elif watson_intent:
+                response_mongo = get_answer_from_mongo(watson_intent, "")
+            else:
+                response_mongo = get_answer_from_mongo(watson_intent, watson_nid)
+            
+            if watson_nid == "ReporteFuga/Capacidad/Calles" or watson_nid == "ReporteFuga/Capacidad/Calles/Descripción" or watson_nid == "reporte-realizado" or watson_nid == "comentario-neutro-si":
+                response_mongo = get_answer_from_mongo("", watson_nid)
 
-        
-        if not watson_intent:
-            response_mongo = get_answer_from_mongo("", watson_nid)
-        elif watson_intent:
-            response_mongo = get_answer_from_mongo(watson_intent, "")
-        else:
-            response_mongo = get_answer_from_mongo(watson_intent, watson_nid)
-        
-        if watson_nid == "ReporteFuga/Capacidad/Calles" or watson_nid == "ReporteFuga/Capacidad/Calles/Descripción" or watson_nid == "reporte-realizado" or watson_nid == "comentario-neutro-si":
-           response_mongo = get_answer_from_mongo("", watson_nid)
+            if watson_nid == "secretario" and watson_intent == "acerca-de":
+                response_mongo = get_answer_from_mongo("", watson_nid)
 
-        if watson_nid == "secretario" and watson_intent == "acerca-de":
-            response_mongo = get_answer_from_mongo("", watson_nid)
+            if watson_nid == "comentarios_neutros" and watson_nid=="comentario-neutro-si":
+                response_mongo = get_answer_from_mongo("", watson_nid)
 
-        if watson_nid == "comentarios_neutros" and watson_nid=="comentario-neutro-si":
-            response_mongo = get_answer_from_mongo("", watson_nid)
+            response_to_user=""
 
-        response_to_user=""
+            for i in response_mongo:
+                response_to_user = i
 
-        for i in response_mongo:
-            response_to_user = i
+            intent = response_to_user.get("intent", None)
+            nid = response_to_user.get("nid", None)
+            response1 = response_to_user.get("response", None)
+            name = response_to_user.get("watson_context_nombre", None)
 
-        intent = response_to_user.get("intent", None)
-        nid = response_to_user.get("nid", None)
-        response1 = response_to_user.get("response", None)
-        name = response_to_user.get("watson_context_nombre", None)
+            #REPORTES A MONGO
+            insert_report(watson_intent, watson_nid, message, "whatsapp")
+            response = {
+                "intent": intent,
+                "nid": nid,
+                "response": response1,
+            }
 
-        #REPORTES A MONGO
-        insert_report(watson_intent, watson_nid, message, "whatsapp")
-        response = {
-            "intent": intent,
-            "nid": nid,
-            "response": response1,
-        }
-
-        print(intent)
-        print(nid)
-        print(response1)
-
-        messages_to_whats_app(response)
+            messages_to_whats_app(response)
         
 api.add_resource(GET_MESSAGE_WHATSAPP, '/getMessageWhatsApp')  # Route_1
 
