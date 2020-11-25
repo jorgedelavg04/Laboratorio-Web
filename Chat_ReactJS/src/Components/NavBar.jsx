@@ -31,6 +31,7 @@ class NavBar extends React.Component {
           <Nav className="mr-auto">
             <Nav.Link href="/">Inicio</Nav.Link>
             <Nav.Link href="/user">Estadística</Nav.Link>
+            <Nav.Link href="/location">Ubicaciones</Nav.Link>
           </Nav>
           <Form inline>
             <LoginButton />

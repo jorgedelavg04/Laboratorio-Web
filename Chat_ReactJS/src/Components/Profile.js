@@ -6,7 +6,7 @@ import { Navbar, Nav, Form, FormControl, Button, Card } from "react-bootstrap";
 import LogoutButton from "./LogoutButton";
 import axios from 'axios';
 import Callback from '../Components/Callback';
-
+import { Link } from "react-router-dom";
 
 
 export const Profile = () => {
@@ -28,6 +28,7 @@ export const Profile = () => {
                     <Card id="card" className="text-center">
                         <Card.Body>
                             <Card.Text>
+                                <Link to="./location.html">TEST</Link>
                                 <h2 className="bienvenido">Bienvenido al Sistema de Reportes de Agua de la CDMX</h2>
                             </Card.Text>
                         </Card.Body>
