@@ -11,6 +11,7 @@ import WidgetFA from "./Components/widget";
 import LoginButton from "./Components/LoginButton";
 import LogoutButton from "./Components/LogoutButton";
 import Profile from "./Components/Profile";
+import Location from "./Components/Location"
 import Footer from "./Components/Footer";
 import Statistics from "./Components/Statistics";
 import { Auth0Provider, useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
@@ -30,6 +31,9 @@ class App extends Component {
             </Route>
             <Route path="/user">
               <Statistics />
+            </Route>
+            <Route path="/location">
+              <Location />
             </Route>
           </Switch>
         <Footer />
