@@ -419,11 +419,11 @@ class GET_MESSAGE_WHATSAPP(Resource):
         #Receive message from Twilio
         message = request.form['Body']
         if 'Latitude' in request.form:
+            watson_answer = watson_response("Gracias")
             latitude = request.form['Latitude']
             longitude = request.form['Longitude']
             insert_location(latitude, longitude)
             draw_map(latitude, longitude)
-            watson_answer = watson_response("Hemos usado la latitud y longitud, gracias.")
         elif message == "1)" or message == "1":
              watson_answer = watson_response("Hacer un reporte")
         elif message == "2)" or message == "2":
@@ -512,7 +512,5 @@ class KEEP_WORKING(Resource):
     
 api.add_resource(KEEP_WORKING, '/')  # Route_1
 
-
-
 if __name__ == '__main__':
-    app.run(port='5002')
+    app.run(debug=True, host="0.0.0.0", port="5002")
